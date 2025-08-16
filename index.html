@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft汉字冒险 🎮</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #6b8c42;
+            background-image: url('https://www.minecraft.net/content/dam/minecraft/touchup-2020/minecraft-background-behavior-lg.jpg');
+            background-size: cover;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 8px solid #8b8b8b;
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #ffaa00;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 0 #000;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #55ff55;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #2d682f;
+        }
+        
+        .mode-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #2d682f;
+        }
+        
+        .mode-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2d682f;
+        }
+        
+        .mode-btn.active {
+            background-color: #ffaa00;
+            box-shadow: 0 4px 0 #cc8800;
+        }
+        
+        .mode-btn.active:hover {
+            background-color: #e69900;
+            box-shadow: 0 6px 0 #cc8800;
+        }
+        
+        .mode-content {
+            display: none;
+        }
+        
+        .mode-content.active {
+            display: block;
+        }
+        
+        .character-display {
+            font-size: 120px;
+            margin: 20px 0;
+            color: #ffcc00;
+            text-shadow: 5px 5px 0 #000;
+        }
+        
+        .character-info {
+            background-color: rgba(139, 139, 139, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: left;
+        }
+        
+        .info-item {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .info-label {
+            color: #55ff55;
+            font-weight: bold;
+        }
+        
+        .next-btn {
+            background-color: #ff5555;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #cc4444;
+        }
+        
+        .next-btn:hover {
+            background-color: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #cc4444;
+        }
+        
+        .next-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #cc4444;
+        }
+        
+        .question {
+            font-size: 1.2em;
+            margin: 20px 0;
+            color: #ffcc00;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .option-btn {
+            background-color: #5555ff;
+            border: none;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #4444cc;
+        }
+        
+        .option-btn:hover {
+            background-color: #4444ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #4444cc;
+        }
+        
+        .option-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4444cc;
+        }
+        
+        .option-btn.correct {
+            background-color: #4CAF50;
+            box-shadow: 0 4px 0 #2d682f;
+        }
+        
+        .option-btn.incorrect {
+            background-color: #ff5555;
+            box-shadow: 0 4px 0 #cc4444;
+        }
+        
+        .feedback {
+            font-size: 1.2em;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .correct-feedback {
+            color: #55ff55;
+        }
+        
+        .incorrect-feedback {
+            color: #ff5555;
+        }
+        
+        .progress {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #ffcc00;
+        }
+        
+        .minecraft-icon {
+            font-size: 24px;
+            margin: 0 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .character-display {
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minecraft汉字冒险 <span class="minecraft-icon">⛏️</span></h1>
+        <div class="subtitle">学习汉字就像挖钻石一样有趣！<span class="minecraft-icon">💎</span></div>
+        
+        <div class="mode-selector">
+            <button id="learn-btn" class="mode-btn active">学习模式 <span class="minecraft-icon">📚</span></button>
+            <button id="practice-btn" class="mode-btn">练习模式 <span class="minecraft-icon">✏️</span></button>
+        </div>
+        
+        <div id="learn-mode" class="mode-content active">
+            <div class="character-display" id="learn-character">?</div>
+            <div class="character-info">
+                <div class="info-item"><span class="info-label">拼音:</span> <span id="pinyin">点击开始学习</span></div>
+                <div class="info-item"><span class="info-label">部首:</span> <span id="radical">-</span></div>
+                <div class="info-item"><span class="info-label">笔画:</span> <span id="strokes">-</span></div>
+                <div class="info-item"><span class="info-label">结构:</span> <span id="structure">-</span></div>
+                <div class="info-item"><span class="info-label">词组1:</span> <span id="word1">-</span> <span id="meaning1">-</span></div>
+                <div class="info-item"><span class="info-label">词组2:</span> <span id="word2">-</span> <span id="meaning2">-</span></div>
+                <div class="info-item"><span class="info-label">词组3:</span> <span id="word3">-</span> <span id="meaning3">-</span></div>
+            </div>
+            <button id="next-btn" class="next-btn">下一个汉字 <span class="minecraft-icon">➡️</span></button>
+            <div class="progress" id="learn-progress">已学习: 0/60</div>
+        </div>
+        
+        <div id="practice-mode" class="mode-content">
+            <div class="character-display" id="practice-character">?</div>
+            <div class="question" id="practice-question">选择正确的拼音</div>
+            <div class="options" id="options-container">
+                <!-- 选项将通过JavaScript动态生成 -->
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <button id="next-question-btn" class="next-btn" style="display: none;">下一题 <span class="minecraft-icon">➡️</span></button>
+            <div class="progress" id="practice-progress">正确率: 0% (0/0)</div>
+        </div>
+    </div>
+
+    <script>
+        // 汉字数据
+        const characters = [
+            { char: "一", pinyin: "yī", radical: "一", strokes: 1, structure: "单一", 
+              words: ["一个", "一起", "一定"], 
+              meanings: ["表示数量，最小的正整数", "一同，一块儿", "固定的，确定的"] },
+            { char: "二", pinyin: "èr", radical: "二", strokes: 2, structure: "单一", 
+              words: ["二月", "第二", "二手"], 
+              meanings: ["一年中的第二个月份", "次序在第二的", "已经使用过的物品"] },
+            { char: "三", pinyin: "sān", radical: "一", strokes: 3, structure: "单一", 
+              words: ["三月", "第三", "三角形"], 
+              meanings: ["一年中的第三个月份", "次序在第三的", "有三条边的几何图形"] },
+            { char: "十", pinyin: "shí", radical: "十", strokes: 2, structure: "单一", 
+              words: ["十月", "十分", "十字"], 
+              meanings: ["一年中的第十个月份", "非常，很", "数字10的形状"] },
+            { char: "木", pinyin: "mù", radical: "木", strokes: 4, structure: "单一", 
+              words: ["木头", "树木", "木工"], 
+              meanings: ["木材", "植物的总称", "从事木制品制作的工匠"] },
+            { char: "禾", pinyin: "hé", radical: "禾", strokes: 5, structure: "单一", 
+              words: ["禾苗", "禾本科", "锄禾"], 
+              meanings: ["谷类植物的幼苗", "植物分类中的一大科", "给禾苗松土除草"] },
+            { char: "上", pinyin: "shàng", radical: "一", strokes: 3, structure: "单一", 
+              words: ["上面", "上学", "上车"], 
+              meanings: ["位置在高处", "去学校学习", "进入车辆"] },
+            { char: "下", pinyin: "xià", radical: "一", strokes: 3, structure: "单一", 
+              words: ["下面", "下雨", "下班"], 
+              meanings: ["位置在低处", "从云层中降下水滴", "结束工作"] },
+            { char: "土", pinyin: "tǔ", radical: "土", strokes: 3, structure: "单一", 
+              words: ["土地", "土豆", "泥土"], 
+              meanings: ["地球表面的物质", "马铃薯的俗称", "湿润的土壤"] },
+            { char: "个", pinyin: "gè", radical: "丨", strokes: 3, structure: "单一", 
+              words: ["个人", "个别", "个子"], 
+              meanings: ["单独的一个人", "少数的，特殊的", "人的身高"] },
+            { char: "八", pinyin: "bā", radical: "八", strokes: 2, structure: "单一", 
+              words: ["八月", "八角", "八哥"], 
+              meanings: ["一年中的第八个月份", "一种香料", "一种能模仿人说话的鸟"] },
+            { char: "入", pinyin: "rù", radical: "入", strokes: 2, structure: "单一", 
+              words: ["入口", "入学", "收入"], 
+              meanings: ["进入的地方", "开始上学", "获得的钱财"] },
+            { char: "大", pinyin: "dà", radical: "大", strokes: 3, structure: "单一", 
+              words: ["大小", "大学", "大家"], 
+              meanings: ["物体的体积", "高等教育机构", "众人"] },
+            { char: "天", pinyin: "tiān", radical: "大", strokes: 4, structure: "上下", 
+              words: ["天空", "天气", "今天"], 
+              meanings: ["地球上方的大气空间", "气象状况", "说话时的这一天"] },
+            { char: "人", pinyin: "rén", radical: "人", strokes: 2, structure: "单一", 
+              words: ["人民", "人口", "人物"], 
+              meanings: ["社会成员的总称", "居住在一定范围内的人的总数", "有代表性或有特点的人"] },
+            { char: "火", pinyin: "huǒ", radical: "火", strokes: 4, structure: "单一", 
+              words: ["火车", "火灾", "火苗"], 
+              meanings: ["以燃料为动力的轨道交通工具", "失火造成的灾害", "火焰的尖端部分"] },
+            { char: "文", pinyin: "wén", radical: "文", strokes: 4, structure: "单一", 
+              words: ["文化", "文章", "文明"], 
+              meanings: ["人类创造的物质和精神财富的总和", "成篇的文字作品", "社会进步的状态"] },
+            { char: "六", pinyin: "liù", radical: "八", strokes: 4, structure: "上下", 
+              words: ["六月", "六边形", "六神无主"], 
+              meanings: ["一年中的第六个月份", "有六条边的多边形", "形容惊慌失措"] },
+            { char: "七", pinyin: "qī", radical: "一", strokes: 2, structure: "单一", 
+              words: ["七月", "七夕", "七上八下"], 
+              meanings: ["一年中的第七个月份", "中国传统情人节", "形容心神不定"] },
+            { char: "儿", pinyin: "ér", radical: "儿", strokes: 2, structure: "单一", 
+              words: ["儿子", "儿童", "花儿"], 
+              meanings: ["父母对儿子的称呼", "年纪小的孩子", "花的儿化音"] },
+            { char: "九", pinyin: "jiǔ", radical: "乙", strokes: 2, structure: "单一", 
+              words: ["九月", "九州", "九牛一毛"], 
+              meanings: ["一年中的第九个月份", "中国的代称", "形容数量极少"] },
+            { char: "无", pinyin: "wú", radical: "一", strokes: 4, structure: "单一", 
+              words: ["无法", "无限", "无忧无虑"], 
+              meanings: ["没有办法", "没有穷尽", "形容非常快乐"] },
+            { char: "口", pinyin: "kǒu", radical: "口", strokes: 3, structure: "单一", 
+              words: ["口袋", "口红", "口才"], 
+              meanings: ["装东西的小袋子", "涂在嘴唇上的化妆品", "说话的才能"] },
+            { char: "日", pinyin: "rì", radical: "日", strokes: 4, structure: "单一", 
+              words: ["日子", "日光", "日记"], 
+              meanings: ["时间单位，一天", "太阳的光线", "每天记录的文字"] },
+            { char: "中", pinyin: "zhōng", radical: "丨", strokes: 4, structure: "单一", 
+              words: ["中国", "中间", "中文"], 
+              meanings: ["我们的国家", "两者之间", "汉语"] },
+            { char: "了", pinyin: "le", radical: "乙", strokes: 2, structure: "单一", 
+              words: ["了解", "完了", "了不起"], 
+              meanings: ["知道得很清楚", "结束了", "非常出色"] },
+            { char: "子", pinyin: "zǐ", radical: "子", strokes: 3, structure: "单一", 
+              words: ["子女", "子弹", "子夜"], 
+              meanings: ["儿子和女儿", "枪弹", "午夜"] },
+            { char: "门", pinyin: "mén", radical: "门", strokes: 3, structure: "单一", 
+              words: ["门口", "门铃", "门票"], 
+              meanings: ["房屋的出入口", "安装在门上的铃", "进入场所的凭证"] },
+            { char: "月", pinyin: "yuè", radical: "月", strokes: 4, structure: "单一", 
+              words: ["月亮", "月饼", "月份"], 
+              meanings: ["地球的卫星", "中秋节吃的圆形糕点", "一年中的某个月"] },
+            { char: "不", pinyin: "bù", radical: "一", strokes: 4, structure: "单一", 
+              words: ["不要", "不错", "不得不"], 
+              meanings: ["表示禁止", "好的，可以的", "必须，只好"] },
+            { char: "开", pinyin: "kāi", radical: "廾", strokes: 4, structure: "单一", 
+              words: ["开始", "开心", "开车"], 
+              meanings: ["起始", "快乐", "驾驶车辆"] },
+            { char: "四", pinyin: "sì", radical: "囗", strokes: 5, structure: "全包围", 
+              words: ["四月", "四季", "四面八方"], 
+              meanings: ["一年中的第四个月份", "春夏秋冬", "各个方向"] },
+            { char: "五", pinyin: "wǔ", radical: "二", strokes: 4, structure: "单一", 
+              words: ["五月", "五官", "五颜六色"], 
+              meanings: ["一年中的第五个月份", "眼耳口鼻眉", "形容色彩丰富"] },
+            { char: "目", pinyin: "mù", radical: "目", strokes: 5, structure: "单一", 
+              words: ["目标", "目录", "目光"], 
+              meanings: ["想要达到的境界", "内容的列表", "视线"] },
+            { char: "耳", pinyin: "ěr", radical: "耳", strokes: 6, structure: "单一", 
+              words: ["耳朵", "耳机", "耳语"], 
+              meanings: ["听觉器官", "戴在耳朵上的音响设备", "小声说话"] },
+            { char: "头", pinyin: "tóu", radical: "大", strokes: 5, structure: "单一", 
+              words: ["头发", "头脑", "头等"], 
+              meanings: ["人头顶上的毛发", "思考能力", "最高等级的"] },
+            { char: "米", pinyin: "mǐ", radical: "米", strokes: 6, structure: "单一", 
+              words: ["米饭", "大米", "厘米"], 
+              meanings: ["煮熟的稻米", "稻谷去壳后的籽实", "长度单位"] },
+            { char: "见", pinyin: "jiàn", radical: "见", strokes: 4, structure: "上下", 
+              words: ["见面", "看见", "见解"], 
+              meanings: ["与人相会", "用眼睛观察到", "个人的看法"] },
+            { char: "白", pinyin: "bái", radical: "白", strokes: 5, structure: "单一", 
+              words: ["白色", "白天", "明白"], 
+              meanings: ["像雪一样的颜色", "从日出到日落的时间", "清楚了解"] },
+            { char: "田", pinyin: "tián", radical: "田", strokes: 5, structure: "单一", 
+              words: ["田地", "田野", "农田"], 
+              meanings: ["耕种的土地", "广阔的耕地", "用于农业生产的土地"] },
+            { char: "电", pinyin: "diàn", radical: "田", strokes: 5, structure: "单一", 
+              words: ["电视", "电话", "电脑"], 
+              meanings: ["接收影像的电子设备", "通讯工具", "电子计算机"] },
+            { char: "也", pinyin: "yě", radical: "乙", strokes: 3, structure: "单一", 
+              words: ["也许", "也是", "也好"], 
+              meanings: ["可能", "同样", "也可以"] },
+            { char: "长", pinyin: "cháng", radical: "长", strokes: 4, structure: "单一", 
+              words: ["长度", "长江", "长久"], 
+              meanings: ["两点之间的距离", "中国最长的河流", "时间很久"] },
+            { char: "山", pinyin: "shān", radical: "山", strokes: 3, structure: "单一", 
+              words: ["山峰", "高山", "山水"], 
+              meanings: ["山的顶端", "很高的山", "自然风景"] },
+            { char: "出", pinyin: "chū", radical: "凵", strokes: 5, structure: "单一", 
+              words: ["出现", "出发", "出口"], 
+              meanings: ["显露出来", "开始行程", "出去的地方"] },
+            { char: "飞", pinyin: "fēi", radical: "飞", strokes: 3, structure: "单一", 
+              words: ["飞机", "飞行", "飞快"], 
+              meanings: ["航空交通工具", "在空中移动", "速度非常快"] },
+            { char: "马", pinyin: "mǎ", radical: "马", strokes: 3, structure: "单一", 
+              words: ["马上", "马车", "马路"], 
+              meanings: ["立刻", "马拉的车", "城市道路"] },
+            { char: "鸟", pinyin: "niǎo", radical: "鸟", strokes: 5, structure: "单一", 
+              words: ["小鸟", "鸟类", "鸟巢"], 
+              meanings: ["小型鸟类", "鸟纲动物的总称", "鸟搭建的窝"] },
+            { char: "云", pinyin: "yún", radical: "二", strokes: 4, structure: "单一", 
+              words: ["白云", "云彩", "乌云"], 
+              meanings: ["白色的云", "天空中各种形状的云", "黑色的云"] },
+            { char: "公", pinyin: "gōng", radical: "八", strokes: 4, structure: "上下", 
+              words: ["公园", "公共", "公鸡"], 
+              meanings: ["供公众游玩的场所", "属于社会的", "雄性鸡"] },
+            { char: "车", pinyin: "chē", radical: "车", strokes: 4, structure: "单一", 
+              words: ["汽车", "火车", "车站"], 
+              meanings: ["机动车辆", "轨道交通工具", "车辆停靠的地方"] },
+            { char: "牛", pinyin: "niú", radical: "牛", strokes: 4, structure: "单一", 
+              words: ["牛奶", "牛肉", "牛油"], 
+              meanings: ["牛产的奶", "牛的肉", "从牛奶中提取的脂肪"] },
+            { char: "羊", pinyin: "yáng", radical: "羊", strokes: 6, structure: "单一", 
+              words: ["山羊", "羊毛", "羊肉"], 
+              meanings: ["一种羊", "羊身上的毛", "羊的肉"] },
+            { char: "小", pinyin: "xiǎo", radical: "小", strokes: 3, structure: "单一", 
+              words: ["小孩", "小学", "小心"], 
+              meanings: ["儿童", "初级教育机构", "谨慎"] },
+            { char: "少", pinyin: "shǎo", radical: "小", strokes: 4, structure: "上下", 
+              words: ["多少", "少数", "少见"], 
+              meanings: ["询问数量", "数量不多", "不常见"] },
+            { char: "巾", pinyin: "jīn", radical: "巾", strokes: 3, structure: "单一", 
+              words: ["毛巾", "围巾", "纸巾"], 
+              meanings: ["洗脸用的布", "围在脖子上的织物", "用于清洁的薄纸"] },
+            { char: "牙", pinyin: "yá", radical: "牙", strokes: 4, structure: "单一", 
+              words: ["牙齿", "牙膏", "牙刷"], 
+              meanings: ["口腔中的咀嚼器官", "清洁牙齿的膏状物", "清洁牙齿的工具"] },
+            { char: "尺", pinyin: "chǐ", radical: "尸", strokes: 4, structure: "单一", 
+              words: ["尺子", "尺寸", "公尺"], 
+              meanings: ["测量长度的工具", "长短大小", "米制长度单位"] },
+            { char: "毛", pinyin: "máo", radical: "毛", strokes: 4, structure: "单一", 
+              words: ["毛衣", "毛笔", "毛巾"], 
+              meanings: ["毛线编织的衣服", "用动物毛制作的笔", "洗脸用的布"] },
+            { char: "卜", pinyin: "bo", radical: "卜", strokes: 2, structure: "单一", 
+              words: ["萝卜", "卜卦", "卜算子"], 
+              meanings: ["一种蔬菜", "占卜", "词牌名"] },
+            { char: "又", pinyin: "yòu", radical: "又", strokes: 2, structure: "单一", 
+              words: ["又高又大", "又来了", "又红又专"], 
+              meanings: ["既...又...", "再次发生", "既有政治觉悟又有专业知识"] },
+            { char: "心", pinyin: "xīn", radical: "心", strokes: 4, structure: "单一", 
+              words: ["心情", "心理", "心脏"], 
+              meanings: ["情绪状态", "人的思想活动", "人体器官"] },
+            { char: "风", pinyin: "fēng", radical: "风", strokes: 4, structure: "半包围", 
+              words: ["风景", "风筝", "风格"], 
+              meanings: ["自然风光", "一种玩具", "特点"] },
+            { char: "力", pinyin: "lì", radical: "力", strokes: 2, structure: "单一", 
+              words: ["力量", "力气", "努力"], 
+              meanings: ["物理作用", "肌肉的力量", "尽力"] },
+            { char: "手", pinyin: "shǒu", radical: "手", strokes: 4, structure: "单一", 
+              words: ["手机", "手表", "手工"], 
+              meanings: ["移动电话", "戴在手腕上的计时器", "用手制作"] },
+            { char: "水", pinyin: "shuǐ", radical: "水", strokes: 4, structure: "单一", 
+              words: ["水果", "水平", "水杯"], 
+              meanings: ["含水分多的植物果实", "标准", "装水的容器"] },
+            { char: "广", pinyin: "guǎng", radical: "广", strokes: 3, structure: "单一", 
+              words: ["广场", "广告", "广泛"], 
+              meanings: ["开阔的场地", "宣传信息", "范围大"] },
+            { char: "升", pinyin: "shēng", radical: "十", strokes: 4, structure: "单一", 
+              words: ["上升", "升旗", "升学"], 
+              meanings: ["向上移动", "把旗子升起", "进入更高年级"] },
+            { char: "足", pinyin: "zú", radical: "足", strokes: 7, structure: "上下", 
+              words: ["足球", "足够", "足迹"], 
+              meanings: ["一种球类运动", "满足需要", "脚印"] },
+            { char: "走", pinyin: "zǒu", radical: "走", strokes: 7, structure: "上下", 
+              words: ["走路", "走开", "走廊"], 
+              meanings: ["步行", "离开", "建筑物内的通道"] },
+            { char: "方", pinyin: "fāng", radical: "方", strokes: 4, structure: "单一", 
+              words: ["方向", "方法", "方面"], 
+              meanings: ["东、南、西、北等", "解决问题的途径", "事物的某一部分"] },
+            { char: "半", pinyin: "bàn", radical: "十", strokes: 5, structure: "单一", 
+              words: ["一半", "半天", "半路"], 
+              meanings: ["二分之一", "很长时间", "行程的中间"] },
+            { char: "巴", pinyin: "bā", radical: "巴", strokes: 4, structure: "单一", 
+              words: ["巴士", "巴结", "尾巴"], 
+              meanings: ["公共汽车", "讨好", "动物身体末端突出的部分"] },
+            { char: "业", pinyin: "yè", radical: "业", strokes: 5, structure: "单一", 
+              words: ["业务", "工业", "业余"], 
+              meanings: ["工作内容", "制造业", "工作之外的时间"] },
+            { char: "本", pinyin: "běn", radical: "木", strokes: 5, structure: "单一", 
+              words: ["书本", "本来", "基本"], 
+              meanings: ["装订成册的著作", "原先", "主要的"] },
+            { char: "平", pinyin: "píng", radical: "干", strokes: 5, structure: "单一", 
+              words: ["平安", "平时", "水平"], 
+              meanings: ["安全无事", "平常时候", "标准"] },
+            { char: "书", pinyin: "shū", radical: "乙", strokes: 4, structure: "单一", 
+              words: ["书包", "书法", "书店"], 
+              meanings: ["装书的袋子", "书写艺术", "卖书的商店"] }
+        ];
+
+        // 学习模式变量
+        let learnedCharacters = [];
+        let currentLearnIndex = -1;
+        
+        // 练习模式变量
+        let practiceCharacters = [];
+        let currentPracticeIndex = -1;
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let currentQuestionType = 0; // 0:拼音, 1:部首, 2:组词
+        
+        // DOM元素
+        const learnBtn = document.getElementById('learn-btn');
+        const practiceBtn = document.getElementById('practice-btn');
+        const learnMode = document.getElementById('learn-mode');
+        const practiceMode = document.getElementById('practice-mode');
+        
+        const learnCharacter = document.getElementById('learn-character');
+        const pinyin = document.getElementById('pinyin');
+        const radical = document.getElementById('radical');
+        const strokes = document.getElementById('strokes');
+        const structure = document.getElementById('structure');
+        const word1 = document.getElementById('word1');
+        const meaning1 = document.getElementById('meaning1');
+        const word2 = document.getElementById('word2');
+        const meaning2 = document.getElementById('meaning2');
+        const word3 = document.getElementById('word3');
+        const meaning3 = document.getElementById('meaning3');
+        const nextBtn = document.getElementById('next-btn');
+        const learnProgress = document.getElementById('learn-progress');
+        
+        const practiceCharacter = document.getElementById('practice-character');
+        const practiceQuestion = document.getElementById('practice-question');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        const practiceProgress = document.getElementById('practice-progress');
+        
+        // 初始化
+        function init() {
+            // 重置学习模式
+            learnedCharacters = [];
+            currentLearnIndex = -1;
+            
+            // 重置练习模式
+            practiceCharacters = [...characters];
+            currentPracticeIndex = -1;
+            correctAnswers = 0;
+            totalQuestions = 0;
+            
+            // 设置事件监听器
+            learnBtn.addEventListener('click', () => {
+                learnBtn.classList.add('active');
+                practiceBtn.classList.remove('active');
+                learnMode.classList.add('active');
+                practiceMode.classList.remove('active');
+            });
+            
+            practiceBtn.addEventListener('click', () => {
+                practiceBtn.classList.add('active');
+                learnBtn.classList.remove('active');
+                practiceMode.classList.add('active');
+                learnMode.classList.remove('active');
+                if (currentPracticeIndex === -1) {
+                    nextPracticeQuestion();
+                }
+            });
+            
+            nextBtn.addEventListener('click', nextLearnCharacter);
+            nextQuestionBtn.addEventListener('click', nextPracticeQuestion);
+            
+            // 开始学习第一个汉字
+            nextLearnCharacter();
+        }
+        
+        // 学习模式：显示下一个汉字
+        function nextLearnCharacter() {
+            // 如果已经学完所有汉字，重新开始
+            if (learnedCharacters.length === characters.length) {
+                learnedCharacters = [];
+            }
+            
+            // 从剩余汉字中随机选择一个
+            const remainingChars = characters.filter(char => !learnedCharacters.includes(char.char));
+            const randomIndex = Math.floor(Math.random() * remainingChars.length);
+            const selectedChar = remainingChars[randomIndex];
+            
+            // 更新显示
+            learnCharacter.textContent = selectedChar.char;
+            pinyin.textContent = selectedChar.pinyin;
+            radical.textContent = selectedChar.radical;
+            strokes.textContent = selectedChar.strokes;
+            structure.textContent = selectedChar.structure;
+            word1.textContent = selectedChar.words[0];
+            meaning1.textContent = selectedChar.meanings[0];
+            word2.textContent = selectedChar.words[1];
+            meaning2.textContent = selectedChar.meanings[1];
+            word3.textContent = selectedChar.words[2];
+            meaning3.textContent = selectedChar.meanings[2];
+            
+            // 添加到已学列表
+            learnedCharacters.push(selectedChar.char);
+            
+            // 更新进度
+            learnProgress.textContent = `已学习: ${learnedCharacters.length}/${characters.length}`;
+        }
+        
+        // 练习模式：显示下一个问题
+        function nextPracticeQuestion() {
+            // 隐藏反馈和下一题按钮
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+            nextQuestionBtn.style.display = 'none';
+            
+            // 随机选择一个汉字
+            const randomIndex = Math.floor(Math.random() * practiceCharacters.length);
+            const selectedChar = practiceCharacters[randomIndex];
+            practiceCharacter.textContent = selectedChar.char;
+            
+            // 随机选择问题类型
+            currentQuestionType = Math.floor(Math.random() * 3);
+            
+            // 生成问题和选项
+            let correctAnswer;
+            let options = [];
+            
+            switch (currentQuestionType) {
+                case 0: // 拼音
+                    practiceQuestion.textContent = '选择正确的拼音';
+                    correctAnswer = selectedChar.pinyin;
+                    
+                    // 生成3个错误选项
+                    while (options.length < 3) {
+                        const randomChar = characters[Math.floor(Math.random() * characters.length)];
+                        if (randomChar.pinyin !== correctAnswer && !options.includes(randomChar.pinyin)) {
+                            options.push(randomChar.pinyin);
+                        }
+                    }
+                    break;
+                    
+                case 1: // 部首
+                    practiceQuestion.textContent = '选择正确的部首';
+                    correctAnswer = selectedChar.radical;
+                    
+                    // 生成3个错误选项
+                    const allRadicals = [...new Set(characters.map(char => char.radical))];
+                    while (options.length < 3) {
+                        const randomRadical = allRadicals[Math.floor(Math.random() * allRadicals.length)];
+                        if (randomRadical !== correctAnswer && !options.includes(randomRadical)) {
+                            options.push(randomRadical);
+                        }
+                    }
+                    break;
+                    
+                case 2: // 组词
+                    practiceQuestion.textContent = '选择正确的组词';
+                    const correctWordIndex = Math.floor(Math.random() * selectedChar.words.length);
+                    correctAnswer = selectedChar.words[correctWordIndex];
+                    
+                    // 生成3个错误选项
+                    const allWords = characters.flatMap(char => char.words);
+                    while (options.length < 3) {
+                        const randomWord = allWords[Math.floor(Math.random() * allWords.length)];
+                        if (randomWord !== correctAnswer && !options.includes(randomWord) && 
+                            !selectedChar.words.includes(randomWord)) {
+                            options.push(randomWord);
+                        }
+                    }
+                    break;
+            }
+            
+            // 添加正确答案并打乱顺序
+            options.push(correctAnswer);
+            options = shuffleArray(options);
+            
+            // 显示选项
+            optionsContainer.innerHTML = '';
+            options.forEach((option, index) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option;
+                optionBtn.addEventListener('click', () => checkAnswer(option, correctAnswer));
+                optionsContainer.appendChild(optionBtn);
+            });
+        }
+        
+        // 检查答案
+        function checkAnswer(selectedOption, correctAnswer) {
+            totalQuestions++;
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selectedOption && selectedOption !== correctAnswer) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            if (selectedOption === correctAnswer) {
+                correctAnswers++;
+                feedback.textContent = '正确！太棒了！🎉';
+                feedback.className = 'feedback correct-feedback';
+            } else {
+                feedback.textContent = `不对哦，正确答案是：${correctAnswer}`;
+                feedback.className = 'feedback incorrect-feedback';
+            }
+            
+            nextQuestionBtn.style.display = 'inline-block';
+            updatePracticeProgress();
+        }
+        
+        // 更新练习进度
+        function updatePracticeProgress() {
+            const accuracy = totalQuestions === 0 ? 0 : Math.round((correctAnswers / totalQuestions) * 100);
+            practiceProgress.textContent = `正确率: ${accuracy}% (${correctAnswers}/${totalQuestions})`;
+        }
+        
+        // 辅助函数：打乱数组
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>
